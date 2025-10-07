@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Averon Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>🛍️ Averon Admin Panel</h1>
+                <div class="header-actions">
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span>Online</span>
+                    </div>
+                    <div class="time-display" id="currentTime"></div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="#" data-target="dashboard" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-text">Dashboard</span>
+                        </a></li>
+                        <li><a href="#" data-target="products" class="nav-link">
+                            <span class="nav-icon">📦</span>
+                            <span class="nav-text">Products</span>
+                        </a></li>
+                        <li><a href="#" data-target="orders" class="nav-link">
+                            <span class="nav-icon">🛒</span>
+                            <span class="nav-text">Orders</span>
+                        </a></li>
+                        <li><a href="#" data-target="users" class="nav-link">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-text">Users</span>
+                        </a></li>
+                        <li><a href="#" data-target="analytics" class="nav-link">
+                            <span class="nav-icon">📈</span>
+                            <span class="nav-text">Analytics</span>
+                        </a></li>
+                        <li><a href="#" data-target="settings" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            <span class="nav-text">Settings</span>
+                        </a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div id="dashboard" class="page">
+                    <div class="page-header">
+                        <h2>Dashboard Overview</h2>
+                        <button class="refresh-btn" onclick="refreshDashboard()">🔄 Refresh</button>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <h3 id="totalUsers">Loading...</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-content">
+                                <h3 id="totalProducts">Loading...</h3>
+                                <p>Total Products</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛒</div>
+                            <div class="stat-content">
+                                <h3 id="totalOrders">Loading...</h3>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <h3 id="totalRevenue">Loading...</h3>
+                                <p>Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <h3>Sales Overview (Last 30 Days)</h3>
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Top Products</h3>
+                            <div id="topProductsList" class="top-products-list">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Page -->
+                <div id="products" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Products Management</h2>
+                        <button class="add-btn" onclick="showAddProductModal()">+ Add Product</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="productsTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="7">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Orders Page -->
+                <div id="orders" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Orders Management</h2>
+                        <div class="filter-controls">
+                            <select id="orderStatusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="ordersTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="6">Loading orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Page -->
+                <div id="users" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Users Management</h2>
+                        <div class="search-controls">
+                            <input type="text" id="userSearch" placeholder="Search users...">
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="usersTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                    <th>Last Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="6">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="analytics" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Advanced Analytics</h2>
+                        <div class="date-range-picker">
+                            <select id="analyticsRange">
+                                <option value="7">Last 7 days</option>
+                                <option value="30" selected>Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="chart-container">
+                            <h3>Revenue Trend</h3>
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Category Distribution</h3>
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>User Growth</h3>
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Order Status Distribution</h3>
+                            <canvas id="orderStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>System Settings</h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3>🔗 API Configuration</h3>
+                            <div class="setting-item">
+                                <label>API Base URL:</label>
+                                <input type="text" id="apiBaseUrl" readonly>
+                            </div>
+                            <div class="setting-item">
+                                <label>Database Status:</label>
+                                <span id="dbStatus" class="status-badge">Checking...</span>
+                            </div>
+                        </div>
+                        <div class="settings-card">
+                            <h3>📊 System Information</h3>
+                            <div class="setting-item">
+                                <label>Server Uptime:</label>
+                                <span id="serverUptime">Loading...</span>
+                            </div>
+                            <div class="setting-item">
+                                <label>Last Updated:</label>
+                                <span id="lastUpdated">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+</body>
+</html>
+
